@@ -1,0 +1,237 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DeployWebJobs.Ui.Views.PublishView">
+
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <Grid Margin="0,0,14,0">
+
+      <!-- ================= FORMULARIO ================= -->
+      <StackPanel Spacing="16" IsVisible="{Binding IsForm}">
+
+        <StackPanel Spacing="2">
+          <TextBlock Classes="h1" Text="Publicar un WebJob" />
+          <TextBlock Classes="muted" Text="Elegí la carpeta que ya compilaste, el WebJob y los clientes. Después, Publicar." />
+        </StackPanel>
+
+        <!-- 1. Carpeta -->
+        <Border Classes="card">
+          <StackPanel Spacing="10">
+            <TextBlock Classes="h2" Text="1. Carpeta de publicación" />
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+              <TextBox Grid.Column="0" Text="{Binding Folder}" Watermark="Ej: C:\DEV\MiWebJob\bin\Release\net472\publish" />
+              <Button Grid.Column="1" Content="Elegir carpeta…" Command="{Binding BrowseCommand}" />
+              <Button Grid.Column="2" Content="Analizar" Command="{Binding AnalyzeCommand}" />
+            </Grid>
+            <TextBlock Text="{Binding FolderError}" Foreground="#E53935" TextWrapping="Wrap" IsVisible="{Binding HasFolderError}" />
+            <StackPanel Spacing="6" IsVisible="{Binding HasPlan}">
+              <TextBlock Text="{Binding PlanSummary}" FontWeight="SemiBold" Foreground="#43A047" />
+              <TextBlock Text="{Binding PlanWarnings}" Foreground="#FB8C00" TextWrapping="Wrap" IsVisible="{Binding HasPlanWarnings}" />
+              <Expander Header="Ver qué archivos se van a subir">
+                <TextBlock Text="{Binding FilePreview}" FontFamily="Consolas,Menlo,monospace" FontSize="12" Opacity="0.8" />
+              </Expander>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <!-- 2. WebJob -->
+        <Border Classes="card">
+          <StackPanel Spacing="10">
+            <TextBlock Classes="h2" Text="2. WebJob" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+              <StackPanel Grid.Column="0" Spacing="4">
+                <TextBlock Classes="muted" Text="Uno que ya usaste antes" />
+                <ComboBox HorizontalAlignment="Stretch"
+                          ItemsSource="{Binding KnownWebJobs}"
+                          SelectedItem="{Binding SelectedKnownWebJob}"
+                          PlaceholderText="Elegir de la lista…" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Spacing="4">
+                <TextBlock Classes="muted" Text="Nombre del WebJob (también para uno nuevo)" />
+                <TextBox Text="{Binding WebJobName}" Watermark="Ej: ProcesadorOC" />
+              </StackPanel>
+            </Grid>
+            <StackPanel Orientation="Horizontal" Spacing="16">
+              <RadioButton GroupName="jobtype" Content="Continuo (corre siempre)" IsChecked="{Binding IsContinuous}" />
+              <RadioButton GroupName="jobtype" Content="Programado / Triggered" IsChecked="{Binding IsTriggered}" />
+            </StackPanel>
+            <Border Height="1" Background="#30808080" Margin="0,4" />
+            <StackPanel Spacing="4">
+              <StackPanel Orientation="Horizontal" Spacing="16">
+                <RadioButton GroupName="jobexists" Content="Ya existe en Azure (actualizar)" IsChecked="{Binding IsExisting}" />
+                <RadioButton GroupName="jobexists" Content="Es nuevo" IsChecked="{Binding IsNewJob}" />
+              </StackPanel>
+              <TextBlock Classes="muted" FontSize="12" TextWrapping="Wrap"
+                         Text="Antes de subir se verifica en cada cliente: si es existente, el nombre tiene que coincidir exacto; si es nuevo, no puede existir uno igual. Si no se cumple, a ese cliente no se le sube nada." />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <!-- 3. Clientes -->
+        <Border Classes="card">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Classes="h2" Text="3. Clientes" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1" Text="{Binding SelectedText}" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </Grid>
+            <TextBlock Classes="muted" TextWrapping="Wrap" IsVisible="{Binding HasNoClients}"
+                       Text="Todavía no hay clientes. Cargalos en la pestaña Clientes (podés importarlos desde el Excel anterior)." />
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+              <TextBox Grid.Column="0" Text="{Binding SearchText}" Watermark="Buscar cliente…" />
+              <Button Grid.Column="1" Content="Marcar todos" Command="{Binding SelectAllCommand}" />
+              <Button Grid.Column="2" Content="Quitar marcas" Command="{Binding SelectNoneCommand}" />
+            </Grid>
+            <ScrollViewer MaxHeight="300" HorizontalScrollBarVisibility="Disabled">
+              <ItemsControl ItemsSource="{Binding VisibleClients}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,2">
+                      <CheckBox Grid.Column="0" Content="{Binding Name}"
+                                IsChecked="{Binding IsSelected}" IsEnabled="{Binding CanSelect}" />
+                      <TextBlock Grid.Column="1" Text="{Binding Detail}" Foreground="{Binding DetailBrush}"
+                                 FontSize="12" VerticalAlignment="Center" />
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </ScrollViewer>
+          </StackPanel>
+        </Border>
+
+        <!-- 4. Opciones y publicar -->
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <TextBlock Classes="h2" Text="4. Publicar" />
+            <WrapPanel>
+              <CheckBox Content="Simulación (no sube nada, solo muestra qué haría)" IsChecked="{Binding IsDryRun}" Margin="0,0,24,0" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <CheckBox Content="En paralelo, de a" IsChecked="{Binding RunParallel}" />
+                <NumericUpDown Minimum="2" Maximum="16" Increment="1" FormatString="0" Width="120"
+                               Value="{Binding ParallelismValue}" IsEnabled="{Binding RunParallel}" />
+                <TextBlock Text="clientes" VerticalAlignment="Center" />
+              </StackPanel>
+            </WrapPanel>
+            <TextBlock Text="{Binding MissingText}" Foreground="#FB8C00" TextWrapping="Wrap" IsVisible="{Binding HasMissing}" />
+            <Button Classes="accent" Content="Publicar" Command="{Binding PublishCommand}"
+                    HorizontalAlignment="Left" FontSize="16" Padding="32,10" />
+          </StackPanel>
+        </Border>
+
+      </StackPanel>
+
+      <!-- ================= PUBLICANDO ================= -->
+      <StackPanel Spacing="16" IsVisible="{Binding IsRunning}">
+        <StackPanel Spacing="2">
+          <TextBlock Classes="h1" Text="Publicando…" />
+          <TextBlock Classes="muted" Text="Podés dejar esta ventana abierta; cada cliente avanza por su cuenta." />
+        </StackPanel>
+
+        <Border Classes="card">
+          <StackPanel Spacing="10">
+            <ProgressBar Minimum="0" Maximum="100" Height="10" Value="{Binding OverallPercent}" />
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="{Binding OverallText}" VerticalAlignment="Center" />
+              <Button Grid.Column="1" Content="Cancelar" Command="{Binding CancelCommand}" />
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <ItemsControl ItemsSource="{Binding Rows}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="card" Padding="14,10" Margin="0,0,0,8">
+                <Grid ColumnDefinitions="220,*,80" RowDefinitions="Auto,Auto,Auto">
+                  <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Grid.Column="1" Text="{Binding StatusText}" Foreground="{Binding StatusBrush}" FontWeight="SemiBold" />
+                  <TextBlock Grid.Column="2" Text="{Binding ElapsedText}" HorizontalAlignment="Right" Classes="muted" />
+                  <ProgressBar Grid.Row="1" Grid.ColumnSpan="3" Margin="0,8,0,0" Minimum="0" Maximum="100"
+                               Value="{Binding Percent}" IsIndeterminate="{Binding IsIndeterminate}" />
+                  <TextBlock Grid.Row="2" Grid.ColumnSpan="3" Margin="0,4,0,0" Text="{Binding Detail}"
+                             Classes="muted" FontSize="12" TextTrimming="CharacterEllipsis" />
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+
+      <!-- ================= RESULTADOS ================= -->
+      <StackPanel Spacing="16" IsVisible="{Binding IsResults}">
+        <StackPanel Spacing="2">
+          <TextBlock Classes="h1" Text="{Binding ResultTitle}" Foreground="{Binding ResultBrush}" TextWrapping="Wrap" />
+          <TextBlock Classes="muted" Text="{Binding ResultElapsed}" />
+        </StackPanel>
+
+        <WrapPanel>
+          <Border Classes="card" Margin="0,0,12,12" MinWidth="150">
+            <StackPanel>
+              <TextBlock Classes="big" Text="{Binding OkCount}" Foreground="#43A047" />
+              <TextBlock Classes="muted" Text="{Binding OkLabel}" />
+            </StackPanel>
+          </Border>
+          <Border Classes="card" Margin="0,0,12,12" MinWidth="150" IsVisible="{Binding HasErrors}">
+            <StackPanel>
+              <TextBlock Classes="big" Text="{Binding ErrorCount}" Foreground="#E53935" />
+              <TextBlock Classes="muted" Text="Con errores" />
+            </StackPanel>
+          </Border>
+          <Border Classes="card" Margin="0,0,12,12" MinWidth="150" IsVisible="{Binding HasOthers}">
+            <StackPanel>
+              <TextBlock Classes="big" Text="{Binding OtherCount}" Foreground="#FB8C00" />
+              <TextBlock Classes="muted" Text="Omitidos / cancelados" />
+            </StackPanel>
+          </Border>
+        </WrapPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Classes="accent" Content="Ver los errores" Command="{Binding ShowErrorsCommand}" IsVisible="{Binding HasErrors}" />
+          <Button Content="{Binding RetryText}" Command="{Binding RetryFailedCommand}" IsVisible="{Binding HasErrors}" />
+          <Button Content="Publicar otra vez" Command="{Binding NewRunCommand}" />
+        </StackPanel>
+
+        <ItemsControl ItemsSource="{Binding ResultRows}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="card" Padding="14,10" Margin="0,0,0,8">
+                <Grid ColumnDefinitions="220,110,80,*">
+                  <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Grid.Column="1" Text="{Binding OutcomeText}" Foreground="{Binding Brush}" FontWeight="SemiBold" />
+                  <TextBlock Grid.Column="2" Text="{Binding ElapsedText}" Classes="muted" />
+                  <TextBlock Grid.Column="3" Text="{Binding AttemptsText}" Classes="muted" />
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+
+      <!-- ================= ERRORES ================= -->
+      <StackPanel Spacing="16" IsVisible="{Binding IsErrors}">
+        <StackPanel Spacing="2">
+          <TextBlock Classes="h1" Text="Errores de la publicación" Foreground="#E53935" />
+          <TextBlock Classes="muted" Text="El detalle técnico también quedó en el log del día. Podés copiar los textos." />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Classes="accent" Content="{Binding RetryText}" Command="{Binding RetryFailedCommand}" />
+          <Button Content="Volver al resumen" Command="{Binding BackToResultsCommand}" />
+          <Button Content="Publicar otra vez" Command="{Binding NewRunCommand}" />
+        </StackPanel>
+
+        <ItemsControl ItemsSource="{Binding ErrorRows}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="card" Margin="0,0,0,10">
+                <StackPanel Spacing="6">
+                  <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="16" />
+                  <SelectableTextBlock Text="{Binding Message}" TextWrapping="Wrap" Foreground="#E53935" />
+                  <TextBlock Text="{Binding AttemptsText}" Classes="muted" FontSize="12" />
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+
+    </Grid>
+  </ScrollViewer>
+</UserControl>

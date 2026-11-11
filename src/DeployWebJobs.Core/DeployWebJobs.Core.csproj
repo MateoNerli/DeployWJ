@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>DeployWebJobs.Core</RootNamespace>
+    <AssemblyName>DeployWebJobs.Core</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Lectura del Excel viejo (solo para importar los clientes una vez). Licencia MIT. -->
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
+    <!-- IHttpClientFactory (llamadas a la API Kudu de Azure) -->
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.*" />
+  </ItemGroup>
+
+</Project>

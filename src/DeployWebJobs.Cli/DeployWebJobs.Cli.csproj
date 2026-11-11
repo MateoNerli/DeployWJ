@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- Se llama "Cli" (y no "Console") para que el namespace no tape a System.Console -->
+    <RootNamespace>DeployWebJobs.Cli</RootNamespace>
+    <!-- El ejecutable final se llama DeployWebJobs.exe -->
+    <AssemblyName>DeployWebJobs</AssemblyName>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+
+    <!-- Ícono y datos que Windows muestra en las propiedades del .exe -->
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <Company>HW Applications</Company>
+    <Product>DeployWebJobs</Product>
+    <AssemblyTitle>DeployWebJobs</AssemblyTitle>
+    <Description>Publica WebJobs en los App Services de los clientes (Zip Deploy / Kudu).</Description>
+    <!-- La versión sale de Directory.Build.props (propiedad Version) y se ve en la app y en el .exe -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Spectre.Console" Version="0.49.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.*" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DeployWebJobs.Core\DeployWebJobs.Core.csproj" />
+  </ItemGroup>
+
+</Project>

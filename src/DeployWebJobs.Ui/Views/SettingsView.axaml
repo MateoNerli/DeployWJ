@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DeployWebJobs.Ui.Views.SettingsView">
+
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Spacing="16" Margin="0,0,14,0">
+      <TextBlock Classes="h1" Text="Ajustes" />
+
+      <Border Classes="card">
+        <StackPanel Spacing="12">
+          <TextBlock Classes="h2" Text="Publicación" />
+          <Grid ColumnDefinitions="320,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+            <TextBlock Grid.Row="0" Text="Clientes a la vez por defecto (paralelo)" VerticalAlignment="Center" />
+            <NumericUpDown Grid.Row="0" Grid.Column="1" Minimum="1" Maximum="16" FormatString="0" Width="140" Value="{Binding MaxParallelism}" />
+            <TextBlock Grid.Row="1" Text="Reintentos ante errores de red" VerticalAlignment="Center" />
+            <NumericUpDown Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="10" FormatString="0" Width="140" Value="{Binding MaxRetries}" />
+            <TextBlock Grid.Row="2" Text="Tiempo máximo de subida por cliente (segundos)" VerticalAlignment="Center" />
+            <NumericUpDown Grid.Row="2" Grid.Column="1" Minimum="30" Maximum="3600" Increment="30" FormatString="0" Width="140" Value="{Binding UploadTimeoutSeconds}" />
+          </Grid>
+          <CheckBox Content="Pedir confirmación antes de publicar de verdad" IsChecked="{Binding ConfirmBeforeDeploy}" />
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card">
+        <StackPanel Spacing="8">
+          <TextBlock Classes="h2" Text="Archivos que NO se suben" />
+          <TextBlock Classes="muted" TextWrapping="Wrap"
+                     Text="Un patrón por línea. * = cualquier cosa dentro de una carpeta, ** = cruza carpetas. Sin barra (/) se compara con el nombre del archivo; con barra, con la ruta relativa. Los .pdb se suben salvo que agregues *.pdb." />
+          <TextBox Text="{Binding ExcludeText}" AcceptsReturn="True" TextWrapping="NoWrap" MinHeight="150" MaxHeight="260"
+                   FontFamily="Consolas,Menlo,monospace" />
+          <Button Content="Restablecer los valores por defecto" Command="{Binding RestoreExcludesCommand}" HorizontalAlignment="Left" />
+        </StackPanel>
+      </Border>
+
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <Button Classes="accent" Content="Guardar ajustes" Command="{Binding SaveCommand}" Padding="24,8" />
+        <TextBlock Text="{Binding StatusText}" Foreground="#43A047" VerticalAlignment="Center" />
+      </StackPanel>
+
+      <Border Classes="card">
+        <StackPanel Spacing="6">
+          <TextBlock Classes="h2" Text="Dónde está todo" />
+          <TextBlock Classes="muted" Text="Configuración (sin contraseñas)" FontSize="12" />
+          <SelectableTextBlock Text="{Binding ConfigPath}" TextWrapping="Wrap" />
+          <TextBlock Classes="muted" Text="Logs (un archivo por día)" FontSize="12" Margin="0,6,0,0" />
+          <SelectableTextBlock Text="{Binding LogsPath}" TextWrapping="Wrap" />
+          <Button Content="Abrir carpeta de logs" Command="{Binding OpenLogsCommand}" HorizontalAlignment="Left" Margin="0,6,0,0" />
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

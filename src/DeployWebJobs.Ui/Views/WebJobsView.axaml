@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DeployWebJobs.Ui.Views.WebJobsView">
+
+  <DockPanel>
+    <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,14,16">
+      <TextBlock Classes="h1" Text="WebJobs conocidos" />
+      <TextBlock Classes="muted" TextWrapping="Wrap"
+                 Text="Se agregan solos la primera vez que publicás uno. Quitarlos de acá no borra nada en Azure." />
+    </StackPanel>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Margin="0,0,14,0" Spacing="8">
+        <TextBlock Classes="muted" IsVisible="{Binding HasNone}" Text="Todavía no publicaste ningún WebJob desde esta herramienta." />
+        <ItemsControl ItemsSource="{Binding Rows}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="card" Padding="14,10" Margin="0,0,0,8">
+                <Grid ColumnDefinitions="*,Auto">
+                  <StackPanel Spacing="2">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                      <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" />
+                      <TextBlock Text="{Binding TypeText}" Classes="muted" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding LastFolder}" Classes="muted" FontSize="12" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding LastDeployText}" Classes="muted" FontSize="12" />
+                  </StackPanel>
+                  <Button Grid.Column="1" Content="Quitar" Command="{Binding DeleteCommand}" VerticalAlignment="Center" />
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

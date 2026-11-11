@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DeployWebJobs.Ui.Views.ClientEditWindow"
+        Title="{Binding Title}"
+        Icon="/Assets/app-256.png"
+        Width="540" SizeToContent="Height" CanResize="False"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
+
+  <StackPanel Margin="24" Spacing="12">
+    <TextBlock Classes="h1" FontSize="20" Text="{Binding Title}" />
+
+    <StackPanel Spacing="4">
+      <TextBlock Text="Nombre del cliente" />
+      <TextBox Text="{Binding Name}" Watermark="Ej: Aval OC" />
+    </StackPanel>
+
+    <StackPanel Spacing="4">
+      <TextBlock Text="Nombre del App Service en Azure" />
+      <TextBox Text="{Binding SiteName}" Watermark="Ej: miempresa-sgr" />
+    </StackPanel>
+
+    <StackPanel Spacing="4">
+      <TextBlock Text="Host SCM (opcional)" />
+      <TextBox Text="{Binding ScmHost}" Watermark="Vacío = el estándar del sitio (nombre.scm.azurewebsites.net)" />
+    </StackPanel>
+
+    <StackPanel Spacing="4">
+      <TextBlock Text="Usuario de publicación" />
+      <TextBox Text="{Binding UserName}" Watermark="Vacío = $ + nombre del sitio" />
+    </StackPanel>
+
+    <StackPanel Spacing="4">
+      <TextBlock Text="Contraseña de publicación" />
+      <TextBox Text="{Binding Password}" PasswordChar="●" Watermark="{Binding PasswordHint}" />
+      <TextBlock Classes="muted" FontSize="12" TextWrapping="Wrap"
+                 Text="Se guarda cifrada en el Administrador de credenciales de Windows, nunca en el archivo de configuración." />
+    </StackPanel>
+
+    <CheckBox Content="Habilitado (se puede publicar en este cliente)" IsChecked="{Binding Enabled}" />
+
+    <TextBlock Text="{Binding ErrorText}" Foreground="#E53935" TextWrapping="Wrap" IsVisible="{Binding HasError}" />
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,8,0,0">
+      <Button Classes="accent" Content="Guardar" Command="{Binding SaveCommand}" />
+      <Button Content="Cancelar" Command="{Binding CancelCommand}" />
+    </StackPanel>
+  </StackPanel>
+</Window>

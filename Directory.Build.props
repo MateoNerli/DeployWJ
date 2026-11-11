@@ -1,0 +1,12 @@
+<Project>
+  <!-- Configuración común a todos los proyectos de la solución v2 -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>2.1.0</Version>
+    <Authors>HW Applications</Authors>
+    <Product>DeployWebJobs</Product>
+  </PropertyGroup>
+</Project>

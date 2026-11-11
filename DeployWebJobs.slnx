@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DeployWebJobs.Core/DeployWebJobs.Core.csproj" />
+    <Project Path="src/DeployWebJobs.Cli/DeployWebJobs.Cli.csproj" />
+    <Project Path="src/DeployWebJobs.Ui/DeployWebJobs.Ui.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DeployWebJobs.Tests/DeployWebJobs.Tests.csproj" />
+  </Folder>
+</Solution>

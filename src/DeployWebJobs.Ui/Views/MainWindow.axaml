@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DeployWebJobs.Ui.ViewModels"
+        xmlns:views="using:DeployWebJobs.Ui.Views"
+        x:Class="DeployWebJobs.Ui.Views.MainWindow"
+        Title="{Binding WindowTitle}"
+        Icon="/Assets/app-256.png"
+        Width="1120" Height="800" MinWidth="900" MinHeight="620"
+        WindowStartupLocation="CenterScreen">
+
+  <Grid ColumnDefinitions="230,*">
+
+    <!-- Menú lateral -->
+    <Border Grid.Column="0" Background="#18808080" Padding="12">
+      <DockPanel>
+        <TextBlock DockPanel.Dock="Bottom" Classes="muted" Margin="8,8,8,0" Text="{Binding VersionText}" />
+        <StackPanel DockPanel.Dock="Top" Margin="8,8,8,18" Spacing="2">
+          <TextBlock Classes="h2" Text="DeployWebJobs" />
+          <TextBlock Classes="muted" Text="Publicación de WebJobs" />
+        </StackPanel>
+        <ListBox ItemsSource="{Binding NavItems}" SelectedItem="{Binding SelectedNav}" Background="Transparent">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Title}" FontSize="15" Margin="6,6" />
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </DockPanel>
+    </Border>
+
+    <!-- Pantalla elegida -->
+    <ContentControl Grid.Column="1" Content="{Binding Current}" Margin="28,24,16,24">
+      <ContentControl.DataTemplates>
+        <DataTemplate DataType="vm:PublishViewModel"><views:PublishView /></DataTemplate>
+        <DataTemplate DataType="vm:ClientsViewModel"><views:ClientsView /></DataTemplate>
+        <DataTemplate DataType="vm:WebJobsViewModel"><views:WebJobsView /></DataTemplate>
+        <DataTemplate DataType="vm:SettingsViewModel"><views:SettingsView /></DataTemplate>
+        <DataTemplate DataType="vm:HelpViewModel"><views:HelpView /></DataTemplate>
+      </ContentControl.DataTemplates>
+    </ContentControl>
+
+  </Grid>
+</Window>

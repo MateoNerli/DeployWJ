@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- WinExe = aplicación con ventana (sin consola negra detrás) -->
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>DeployWebJobs.Ui</RootNamespace>
+    <AssemblyName>DeployWebJobsUI</AssemblyName>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <Company>HW Applications</Company>
+    <Product>DeployWebJobs</Product>
+    <AssemblyTitle>DeployWebJobs</AssemblyTitle>
+    <Description>Publica WebJobs en los App Services de los clientes (interfaz gráfica).</Description>
+    <!-- Bindings por reflexión (los más simples de leer y depurar) -->
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.*" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.*" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.*" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.*" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.*" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DeployWebJobs.Core\DeployWebJobs.Core.csproj" />
+  </ItemGroup>
+
+</Project>
